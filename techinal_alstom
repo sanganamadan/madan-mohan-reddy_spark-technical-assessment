@@ -1,0 +1,184 @@
+--creating database
+create database ticket_management;
+--using the database
+use ticket_management;
+
+1.Design a Ticket Management System
+-- USERS TABLE
+CREATE TABLE users (
+    user_id int primary key auto_increment,
+    name varchar(50) not null,
+    email varchar(50) unique,
+    );
+
+-- DEPARTMENTS TABLE
+CREATE TABLE departments (
+    dept_id int primary key auto_increment,
+    dept_name varchar(40) not null
+);
+
+-- TICKETS TABLE
+CREATE TABLE tickets (
+    ticket_id int primary key auto_increment,
+    user_id int,
+    dept_id int
+   );
+
+--changing datatype for dept_id tickets table
+  alter table tickets modify dept_id varchar(60);
+
+--using all the ddl commands
+  --ALTER
+    ALTER TABLE users
+    ADD phone VARCHAR(15);
+  --RENAME
+    RENAME TABLE tickets TO support_tickets;
+  --TRUNCATE
+    TRUNCATE TABLE support_tickets;
+  --DROP
+    DROP TABLE support_tickets;
+
+2.why using varchar for ticket id is a bad idea
+-- It includes both characters and numbers in varchar() which will consume more storage
+--It is inconsistent format like all the numerics and characters are mixed
+--There is no auto increment
+--There is no order
+
+
+3.Perform all following Operations
+--All DML Commands
+ 1.insert
+  INSERT INTO users (name, email) VALUES
+  ('Sai', 'sai@gmail.com'),
+  ('Ravi', 'ravi@gmail.com'),
+  ('Anu', 'anu@gmail.com');
+
+  INSERT INTO departments (dept_name) VALUES
+  ('IT Support'),
+  ('HR'),
+  ('Finance');
+
+  INSERT INTO tickets (user_id, dept_id) VALUES
+  (1, 1),
+  (1, 2),
+  (2, 1),
+  (3, NULL);
+ 2.update
+  UPDATE tickets
+  SET user_id = '2'
+  WHERE dept_id = 1;
+ 3.delete
+  DELETE FROM tickets
+  WHERE ticket_id = 3;
+ 4.select
+  SELECT * FROM tickets;
+--Fetch Data (JOIN)
+  SELECT 
+      t.ticket_id,
+      u.name AS user_name,
+      d.dept_name
+   FROM tickets t
+   JOIN users u ON t.user_id = u.user_id
+   LEFT JOIN departments d ON t.dept_id = d.dept_id;
+--Tickets without Department
+  SELECT * 
+  FROM tickets
+  WHERE dept_id IS NULL;
+--Users with Multiple Tickets
+  SELECT 
+      u.user_id,
+      u.name,
+      COUNT(t.ticket_id) AS total_tickets
+  FROM users u
+  JOIN tickets t ON u.user_id = t.user_id
+  GROUP BY u.user_id, u.name
+  HAVING COUNT(t.ticket_id) > 1;
+
+4.Replace NULL commission with 0 in a table & each column
+ --users table
+  UPDATE users
+  SET null = 0
+  WHERE name and email IS NULL;
+ --departments
+  UPDATE departments
+  SET null = 0
+  WHERE name IS NULL;
+ --tickets
+  UPDATE tickets
+  SET null = 0
+  WHERE user_id and departmrnt IS NULL;
+
+5.Find 4th Highest Salary
+  SELECT DISTINCT salary
+  FROM employees
+  ORDER BY salary DESC
+  LIMIT 1 OFFSET 3;
+
+6.What will happen if you DELETE without WHERE
+ --Deletes ALL rows
+ --Table structure remains
+ --Cannot rollback (if autocommit ON)
+                    
+7.What is the difference between = vs LIKE
+ -- = is nothing but exact match of a particular data type 
+ --like is nothing but pattern matching and also contains special characters
+                    
+8.Write a query for 'I%Love%ALGONEX'
+  SELECT *
+  FROM table_name
+  WHERE column_name LIKE 'I%Love%ALGONEX';
+                    
+9.Write any 10 MySQL fucntions with a clear examples
+  --string functions
+    SELECT UPPER('hello');        -- HELLO
+    SELECT LOWER('HELLO');        -- hello
+    SELECT LENGTH('SQL');         -- 3
+  --numeric functions
+    SELECT ROUND(10.567, 2);      -- 10.57
+    SELECT CEIL(4.2);             -- 5
+    SELECT FLOOR(4.9);            -- 4   
+  --date functions
+    SELECT NOW();                 -- current datetime
+    SELECT CURDATE();             -- current date
+    SELECT DATEDIFF('2025-12-31','2025-01-01'); -- difference    
+                    
+10.what is Lambda Function and list comprehension, give an example for each
+
+11.Write a code for factorial & even/odd of a number within a single function
+
+12.Write a query structure for Triggers/SP/Views/CTE/Sub query types
+  --triggers
+   CREATE TRIGGER before_insert_emp
+   BEFORE INSERT ON employees
+   FOR EACH ROW
+   SET NEW.salary = NEW.salary + 1000;
+  --views
+    CREATE VIEW emp_view AS
+    SELECT name, salary FROM employees;  
+  --ctes
+    WITH high_salary AS (
+    SELECT * FROM employees WHERE salary > 50000
+    )
+    SELECT * FROM high_salary;    
+   --single row subquery                 
+     SELECT * FROM employees
+     WHERE salary = (SELECT MAX(salary) FROM employees);  
+   --multi row subquery
+     SELECT * FROM employees
+     WHERE dept_id IN (SELECT dept_id FROM departments);                
+13.What AI models you’re using, how you’ll write a best prompt for better resukt
+  -- AI Models Used
+     GPT (like ChatGPT)
+     BERT (NLP tasks)
+     Vision models (image recognition)
+     LLMs for coding, chat, reasoning
+   --How to Write Best Prompt
+    Good Prompt Structure:
+    Clear goal
+    Context
+    Constraints
+Example:
+ Bad:
+  Explain SQL
+ Good:
+   Explain SQL joins with examples (INNER, LEFT, RIGHT) in simple terms for beginner
